@@ -1,20 +1,19 @@
 FROM node:18-alpine
 
-# Establece el directorio de trabajo dentro del contenedor
+# Directorio dentro del contenedor
 WORKDIR /usr/src/app
 
-# Copia los archivos de manifiesto de dependencias para aprovechar el caché de Docker
-COPY ./cafeteria-back/package*.json ./
+# Copiar solo archivos necesarios para instalar dependencias
+COPY package*.json ./
 
-# Instala todas las dependencias del proyecto
-RUN npm install
+# Instalar dependencias en modo producción
+RUN npm ci --only=production
 
-# Copia el resto del código fuente del backend al contenedor
-COPY ./cafeteria-back .
+# Copiar el resto de tu proyecto
+COPY . .
 
-# Expón el puerto que usa tu backend (Asumo el puerto 3000 por defecto)
+# El puerto REAL de tu backend (cámbialo si usas otro)
 EXPOSE 3000
 
-# Comando para ejecutar la aplicación
-# Asegúrate de que tu script 'start' en package.json sea el correcto
-CMD [ "npm", "start" ]
+# Comando de inicio
+CMD ["node", "server.js"]
